@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!--先把bean创建出来-->
+    <bean id="log" class="com.example.demo.test1.LogImpl"></bean>
+    <bean id="studentDao" class="com.example.demo.test1.StudentDaoImpl"></bean>
+    <!--以aop:config开始配置-->
+    <aop:config>
+        <!--配置目标类，expression是切点表达式，这里的意思是匹配包
+的StudentDaoImpl类的所有方法，第一个*号的意思是所有方法返回值，包括void-->
+        <aop:pointcut id="studentPointcut" expression="execution(* com.example.demo.test1.StudentDaoImpl.*())"/>
+        <!--配置切点类-->
+        <aop:aspect id="logAspect" ref="log">
+            <!--配置连接点，和目标-->
+            <aop:before method="beforeInsert" pointcut-ref="studentPointcut"/>
+            <aop:after method="afterInsert" pointcut-ref="studentPointcut"/>
+        </aop:aspect>
+    </aop:config>
+</beans>

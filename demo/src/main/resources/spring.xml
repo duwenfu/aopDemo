@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--<bean id="piano" class="concert.PianoPerform" lazy-init="true"/>-->
+
+    <bean id="worker" class="com.example.demo.test3.Worker"/>
+
+    <!--Spring需要通过静态方法aspectOf获得audience实例，Audience切面编译后的class文件附在文末-->
+    <bean id="audience" class="com.example.demo.test3.Audience" factory-method="aspectOf">
+        <property name="worker" ref="worker" /><!--通过Spring把协作的bean注入到切面中-->
+    </bean>
+
+    <!--这里注意一下bean的顺序，因为在构造器切点后置通知时调用了worker的sendMsg(String)方法，所以避免出现空指针异常，咱们先把worker声明在前-->
+    <!--如果要将piano或者violin声明在前，可以设置lazy-init="true"-->
+    <!--所以spring是从上到下解析并实例化bean？还是解析完整个文件再实例化呢？欢迎评论区留言交流-->
+
+    <bean id="piano" class="com.example.demo.test3.PianoPerform"/>
+
+    <bean id="violin" class="com.example.demo.test3.ViolinPerform"/>
+</beans>
